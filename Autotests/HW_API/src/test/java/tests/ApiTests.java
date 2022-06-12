@@ -2,6 +2,7 @@ package tests;
 
 import io.qameta.allure.Feature;
 import io.restassured.response.Response;
+import models.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -42,7 +43,7 @@ public class ApiTests {
         String body = "{ \"name\": \"michel\", \"job\": \"leader\" }";
 
         step("POST /api/users", () -> {
-        given()
+            User data = given()
                 .spec(request)
                 .when()
                 .body(body)
@@ -52,9 +53,11 @@ public class ApiTests {
                 .log().status()
                 .log().body()
                 .statusCode(201)
-                .body("name", is("michel"))
-                .body("job", is("leader"));
+                .extract().as(User.class);
+
+            assertEquals("leader", data.getJob());
         });
+
     }
 
     @Test
