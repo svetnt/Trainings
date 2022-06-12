@@ -5,7 +5,8 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static helpers.CustomApiListener.withCustomTemplates;
+import static helpers.Specs.request;
+import static helpers.Specs.responseSpec;
 import static io.qameta.allure.Allure.step;
 import static io.restassured.RestAssured.given;
 import static io.restassured.http.ContentType.JSON;
@@ -21,11 +22,11 @@ public class ApiTests {
     void getListUsersTest(){
         step("GET /api/users?page=2", () -> {
             given()
-                    .filter(withCustomTemplates())
-                    .log().uri()
+                    .spec(request)
                     .when()
-                    .get("https://reqres.in/api/users?page=2")
+                    .get("/users?page=2")
                     .then()
+                    .spec(responseSpec)
                     .log().status()
                     .log().body()
                     .statusCode(200)
@@ -42,13 +43,11 @@ public class ApiTests {
 
         step("POST /api/users", () -> {
         given()
-                .filter(withCustomTemplates())
-                .log().uri()
-                .log().body()
+                .spec(request)
                 .when()
                 .body(body)
                 .contentType(JSON)
-                .post("https://reqres.in/api/users")
+                .post("/users")
                 .then()
                 .log().status()
                 .log().body()
@@ -64,10 +63,9 @@ public class ApiTests {
     void deleteUserTest(){
         step("DELETE /api/users/2", () -> {
         given()
-                .filter(withCustomTemplates())
-                .log().uri()
+                .spec(request)
                 .when()
-                .delete("https://reqres.in/api/users/2")
+                .delete("/users/2")
                 .then()
                 .log().status()
                 .statusCode(204);
@@ -82,13 +80,11 @@ public class ApiTests {
 
         step("POST /api/login", () -> {
         given()
-                .filter(withCustomTemplates())
-                .log().uri()
-                .log().body()
+                .spec(request)
                 .when()
                 .body(body)
                 .contentType(JSON)
-                .post("https://reqres.in/api/login")
+                .post("/login")
                 .then()
                 .log().status()
                 .log().body()
@@ -103,10 +99,9 @@ public class ApiTests {
     void getNotFoundTest(){
         step("GET /api/users/23", () -> {
         Response response = given()
-                .filter(withCustomTemplates())
-                .log().uri()
+                .spec(request)
                 .when()
-                .get("https://reqres.in/api/users/23")
+                .get("/users/23")
                 .then()
                 .log().status()
                 .log().body()
